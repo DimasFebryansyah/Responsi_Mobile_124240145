@@ -4,57 +4,45 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'app/controllers/auth_controller.dart';
-import 'app/controllers/favorites_controller.dart';
-import 'app/models/tv_show.dart';
+import 'app/controllers/library_controller.dart';
+import 'app/models/game.dart';
 import 'app/screens/home_shell.dart';
 import 'app/screens/login_page.dart';
-import 'app/services/notification_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   if (!Hive.isAdapterRegistered(0)) {
-    Hive.registerAdapter(TvShowAdapter());
+    Hive.registerAdapter(GameAdapter());
   }
-  final legacyFavoritesBox = await Hive.openBox<String>('favorites');
-  final favoritesBox = await Hive.openBox<TvShow>('favorite_shows');
-  await FavoritesController.migrateLegacyFavorites(
-    legacyBox: legacyFavoritesBox,
-    targetBox: favoritesBox,
-  );
-  await legacyFavoritesBox.close();
-  await Hive.deleteBoxFromDisk('favorites');
+  final libraryBox = await Hive.openBox<Game>('library_games');
   final preferences = await SharedPreferences.getInstance();
 
   Get.put<SharedPreferences>(preferences);
   Get.put(
     AuthController(
       preferences,
-      initialUsername: preferences.getBool('isLoggedIn') == true
-          ? preferences.getString('username')
+      initialEmail: preferences.getBool('isLoggedIn') == true
+          ? preferences.getString('email')
           : null,
     ),
   );
-  Get.put(FavoritesController(favoritesBox));
-
-  if (NotificationService.isSupported) {
-    await NotificationService().initialize();
-  }
-  runApp(const SeriesApp());
+  Get.put(LibraryController(libraryBox));
+  runApp(const HydraGamesApp());
 }
 
-class SeriesApp extends StatelessWidget {
-  const SeriesApp({super.key});
+class HydraGamesApp extends StatelessWidget {
+  const HydraGamesApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const seedColor = Color(0xFFE53945);
+    const seedColor = Color(0xFF42D392);
     const backgroundColor = Color(0xFF0B0B0D);
     const surfaceColor = Color(0xFF17191F);
-    const blueColor = Color(0xFF3B82F6);
+    const blueColor = Color(0xFF4F8CFF);
 
     return GetMaterialApp(
-      title: 'Serially',
+      title: 'Hydra Games',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme:

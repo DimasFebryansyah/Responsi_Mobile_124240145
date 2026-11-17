@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 import '../controllers/auth_controller.dart';
@@ -16,7 +15,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  final _nimController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authController = Get.find<AuthController>();
   bool _isSubmitting = false;
@@ -24,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _nimController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -35,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
 
     try {
       final success = await _authController.login(
-        nim: _nimController.text.trim(),
+        email: _emailController.text.trim(),
         password: _passwordController.text,
       );
       if (success && mounted) {
@@ -47,7 +46,7 @@ class _LoginPageState extends State<LoginPage> {
       } else if (!success) {
         Get.snackbar(
           'Login gagal',
-          'Periksa NIM dan password. Password latihan adalah 123.',
+          'Periksa kembali email dan password.',
           snackPosition: SnackPosition.BOTTOM,
         );
       }
@@ -140,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                                   ),
                                   const SizedBox(width: 11),
                                   const Text(
-                                    'SERIALLY',
+                                    'HYDRA GAMES',
                                     style: TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w800,
@@ -151,7 +150,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               const Spacer(),
                               const Text(
-                                'Cerita seru,\nada di sini.',
+                                'Play more,\nexplore more.',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -161,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               const SizedBox(height: 8),
                               Text(
-                                'Temukan serial favorit berikutnya.',
+                                'Temukan game gratis favoritmu.',
                                 style: TextStyle(
                                   color: Colors.white.withValues(alpha: 0.82),
                                   fontSize: 14,
@@ -186,31 +185,25 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(height: 5),
                             Text(
-                              'Masuk menggunakan NIM 9 digit kamu.',
+                              'Masuk dengan email dan password.',
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: colors.onSurfaceVariant),
                             ),
                             const SizedBox(height: 22),
                             TextFormField(
-                              controller: _nimController,
-                              keyboardType: TextInputType.number,
+                              controller: _emailController,
+                              keyboardType: TextInputType.emailAddress,
                               textInputAction: TextInputAction.next,
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                                LengthLimitingTextInputFormatter(9),
-                              ],
-                              maxLength: 9,
                               decoration: const InputDecoration(
-                                labelText: 'NIM',
-                                hintText: 'Contoh: 124240145',
-                                counterText: '',
-                                prefixIcon: Icon(Icons.badge_outlined),
+                                labelText: 'Email',
+                                hintText: 'nama@email.com',
+                                prefixIcon: Icon(Icons.email_outlined),
                               ),
                               validator: (value) {
-                                final nim = value?.trim() ?? '';
-                                if (nim.isEmpty) return 'NIM wajib diisi.';
-                                if (!AuthController.isValidNim(nim)) {
-                                  return 'NIM harus terdiri dari 9 angka.';
+                                final email = value?.trim() ?? '';
+                                if (email.isEmpty) return 'Email wajib diisi.';
+                                if (!AuthController.isValidEmail(email)) {
+                                  return 'Masukkan alamat email yang valid.';
                                 }
                                 return null;
                               },
@@ -261,7 +254,7 @@ class _LoginPageState extends State<LoginPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text('Masuk ke Serially'),
+                                        Text('Masuk ke Hydra Games'),
                                         SizedBox(width: 8),
                                         Icon(Icons.arrow_forward_rounded),
                                       ],
@@ -282,7 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(width: 7),
                         Text(
-                          'NIM 9 angka  •  password 123',
+                          'Gunakan email dan password pilihanmu',
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: colors.onSurfaceVariant),
                         ),

@@ -8,7 +8,7 @@ class ProfileController extends GetxController {
   ProfileController(this._preferences, {ImagePicker? imagePicker})
     : _imagePicker = imagePicker ?? ImagePicker(),
       displayName =
-          (_preferences.getString(_displayNameKey) ?? 'Pengguna Serially').obs,
+          (_preferences.getString(_displayNameKey) ?? 'Hydra Player').obs,
       bio = (_preferences.getString(_bioKey) ?? '').obs,
       photoBase64 = (_preferences.getString(_photoKey) ?? '').obs;
 

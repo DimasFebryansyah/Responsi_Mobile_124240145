@@ -2,37 +2,54 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthController extends GetxController {
-  AuthController(this._preferences, {required String? initialUsername})
-    : username = (initialUsername?.trim() ?? '').obs,
-      isAuthenticated = isValidNim(initialUsername ?? '').obs;
+  AuthController(this._preferences, {required String? initialEmail})
+    : email = (initialEmail?.trim() ?? '').obs,
+      isAuthenticated = (initialEmail?.trim().isNotEmpty ?? false).obs;
 
-  static final _nimPattern = RegExp(r'^\d{9}$');
-  static const _usernameKey = 'username';
+  static final _emailPattern = RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]+$');
+  static const _emailKey = 'email';
   static const _loggedInKey = 'isLoggedIn';
 
   final SharedPreferences _preferences;
-  final RxString username;
+  final RxString email;
   final RxBool isAuthenticated;
 
-  static bool isValidNim(String nim) => _nimPattern.hasMatch(nim.trim());
+  static bool isValidEmail(String email) =>
+      _emailPattern.hasMatch(email.trim());
 
-  Future<bool> login({required String nim, required String password}) async {
-    final normalizedNim = nim.trim();
-    if (!isValidNim(normalizedNim) || password != '123') {
+  Future<bool> login({required String email, required String password}) async {
+    final normalizedEmail = email.trim();
+    if (!isValidEmail(normalizedEmail) || password.isEmpty) {
       return false;
     }
 
-    await _preferences.setString(_usernameKey, normalizedNim);
-    await _preferences.setBool(_loggedInKey, true);
-    username.value = normalizedNim;
+    final emailSaved = await _preferences.setString(_emailKey, normalizedEmail);
+    if (!emailSaved) {
+      throw const AuthException('Email tidak dapat disimpan.');
+    }
+    final sessionSaved = await _preferences.setBool(_loggedInKey, true);
+    if (!sessionSaved) {
+      await _preferences.remove(_emailKey);
+      throw const AuthException('Sesi login tidak dapat disimpan.');
+    }
+    this.email.value = normalizedEmail;
     isAuthenticated.value = true;
     return true;
   }
 
   Future<void> logout() async {
-    await _preferences.remove(_usernameKey);
+    await _preferences.remove(_emailKey);
     await _preferences.remove(_loggedInKey);
-    username.value = '';
+    email.value = '';
     isAuthenticated.value = false;
   }
+}
+
+class AuthException implements Exception {
+  const AuthException(this.message);
+
+  final String message;
+
+  @override
+  String toString() => message;
 }

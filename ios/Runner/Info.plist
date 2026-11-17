@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Serially</string>
+	<string>Hydra Games</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,12 +26,6 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Lokasi digunakan untuk menampilkan titik demo terdekat.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Foto profil yang dipilih akan disimpan secara lokal di perangkat.</string>
-	<key>NSCameraUsageDescription</key>
-	<string>Kamera digunakan untuk mengambil foto profil.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

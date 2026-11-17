@@ -99,9 +99,9 @@ class NotificationService {
 
   static const _notificationDetails = NotificationDetails(
     android: AndroidNotificationDetails(
-      'serially_reminders',
-      'Pengingat Serially',
-      channelDescription: 'Pengingat tontonan dan aktivitas Serially.',
+      'hydra_game_reminders',
+      'Pengingat Hydra Games',
+      channelDescription: 'Pengingat aktivitas Hydra Games.',
       importance: Importance.high,
       priority: Priority.high,
     ),

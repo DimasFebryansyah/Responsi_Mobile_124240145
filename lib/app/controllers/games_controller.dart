@@ -1,36 +1,36 @@
 import 'package:get/get.dart';
 
-import '../models/tv_show.dart';
-import '../services/tvmaze_service.dart';
+import '../models/game.dart';
+import '../services/game_service.dart';
 
-class ShowsController extends GetxController {
-  ShowsController(this._service);
+class GamesController extends GetxController {
+  GamesController(this._service);
 
-  final TvMazeService _service;
-  final shows = <TvShow>[].obs;
+  final GameService _service;
+  final games = <Game>[].obs;
   final isLoading = false.obs;
   final errorMessage = ''.obs;
   final searchQuery = ''.obs;
 
-  List<TvShow> get filteredShows {
+  List<Game> get filteredGames {
     final query = searchQuery.value.trim().toLowerCase();
-    if (query.isEmpty) return shows;
-    return shows
-        .where((show) => show.name.toLowerCase().contains(query))
+    if (query.isEmpty) return games;
+    return games
+        .where((game) => game.title.toLowerCase().contains(query))
         .toList(growable: false);
   }
 
   @override
   void onInit() {
     super.onInit();
-    fetchShows();
+    fetchGames();
   }
 
-  Future<void> fetchShows() async {
+  Future<void> fetchGames() async {
     isLoading.value = true;
     errorMessage.value = '';
     try {
-      shows.assignAll(await _service.fetchShows());
+      games.assignAll(await _service.fetchGames());
     } on Exception catch (error) {
       errorMessage.value = error.toString();
     } finally {

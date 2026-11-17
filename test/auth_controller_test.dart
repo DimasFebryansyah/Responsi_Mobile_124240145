@@ -7,51 +7,57 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  test('accepts any nine-digit NIM and clears the session on logout', () async {
+  test('stores the email session and clears it on logout', () async {
     final preferences = await SharedPreferences.getInstance();
-    final controller = AuthController(preferences, initialUsername: null);
+    final controller = AuthController(preferences, initialEmail: null);
 
     final loggedIn = await controller.login(
-      nim: ' 012345678 ',
-      password: '123',
+      email: ' player@example.com ',
+      password: 'any-password',
     );
 
     expect(loggedIn, isTrue);
     expect(controller.isAuthenticated.value, isTrue);
-    expect(controller.username.value, '012345678');
+    expect(controller.email.value, 'player@example.com');
+    expect(preferences.getString('email'), 'player@example.com');
     expect(preferences.getBool('isLoggedIn'), isTrue);
 
     await controller.logout();
 
     expect(controller.isAuthenticated.value, isFalse);
-    expect(preferences.getString('username'), isNull);
+    expect(preferences.getString('email'), isNull);
     expect(preferences.getBool('isLoggedIn'), isNull);
   });
 
-  test('rejects NIMs that are not exactly nine digits', () async {
+  test('rejects an invalid email address', () async {
     final preferences = await SharedPreferences.getInstance();
-    final controller = AuthController(preferences, initialUsername: null);
-
-    for (final nim in ['12345678', '1234567890', '1234abc89']) {
-      final loggedIn = await controller.login(nim: nim, password: '123');
-
-      expect(loggedIn, isFalse);
-    }
-
-    expect(controller.isAuthenticated.value, isFalse);
-    expect(preferences.getBool('isLoggedIn'), isNull);
-  });
-
-  test('rejects the wrong password for a valid NIM', () async {
-    final preferences = await SharedPreferences.getInstance();
-    final controller = AuthController(preferences, initialUsername: null);
+    final controller = AuthController(preferences, initialEmail: null);
 
     final loggedIn = await controller.login(
-      nim: '124240145',
-      password: 'wrong',
+      email: 'not-an-email',
+      password: 'password',
     );
 
     expect(loggedIn, isFalse);
     expect(controller.isAuthenticated.value, isFalse);
+    expect(preferences.getBool('isLoggedIn'), isNull);
+  });
+
+  test('accepts any non-empty password and rejects an empty one', () async {
+    final preferences = await SharedPreferences.getInstance();
+    final controller = AuthController(preferences, initialEmail: null);
+
+    final loggedIn = await controller.login(
+      email: 'player@example.com',
+      password: 'anything',
+    );
+    final emptyPassword = await controller.login(
+      email: 'other@example.com',
+      password: '',
+    );
+
+    expect(loggedIn, isTrue);
+    expect(emptyPassword, isFalse);
+    expect(controller.isAuthenticated.value, isTrue);
   });
 }

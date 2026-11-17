@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../screens/favorites_page.dart';
+import '../screens/library_page.dart';
 import '../screens/profile_page.dart';
 import '../screens/shows_page.dart';
 
@@ -16,7 +16,7 @@ class _HomeShellState extends State<HomeShell> {
   final _selectedIndex = 0.obs;
   late final List<Widget> _pages = const [
     ShowsPage(),
-    FavoritesPage(),
+    LibraryPage(),
     ProfilePage(),
   ];
 
@@ -25,26 +25,30 @@ class _HomeShellState extends State<HomeShell> {
     return Obx(
       () => Scaffold(
         body: IndexedStack(index: _selectedIndex.value, children: _pages),
-        bottomNavigationBar: NavigationBar(
-          selectedIndex: _selectedIndex.value,
-          onDestinationSelected: (index) => _selectedIndex.value = index,
-          destinations: const [
-            NavigationDestination(
-              icon: Icon(Icons.movie_outlined),
-              selectedIcon: Icon(Icons.movie),
-              label: 'Beranda',
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.sports_esports_outlined),
+              activeIcon: Icon(Icons.sports_esports),
+              label: 'Home',
             ),
-            NavigationDestination(
-              icon: Icon(Icons.favorite_border),
-              selectedIcon: Icon(Icons.favorite),
-              label: 'Favorit',
+            BottomNavigationBarItem(
+              icon: Icon(Icons.video_library_outlined),
+              activeIcon: Icon(Icons.video_library),
+              label: 'Library',
             ),
-            NavigationDestination(
+            BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
-              selectedIcon: Icon(Icons.person),
-              label: 'Profil',
+              activeIcon: Icon(Icons.person),
+              label: 'Profile',
             ),
           ],
+          currentIndex: _selectedIndex.value,
+          onTap: (index) => _selectedIndex.value = index,
+          backgroundColor: Theme.of(context).colorScheme.surfaceContainerLow,
+          selectedItemColor: Theme.of(context).colorScheme.primary,
+          unselectedItemColor: Theme.of(context).colorScheme.onSurfaceVariant,
+          type: BottomNavigationBarType.fixed,
         ),
       ),
     );
